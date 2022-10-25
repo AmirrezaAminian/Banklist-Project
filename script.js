@@ -70,4 +70,62 @@ const inputClosePin = document.querySelector(".form__input--pin");
 /////////////////////////////////////////////
 // Projects
 
+const displayMovement = function (movements, sort = false) {
+  containerMovements.innerHTML = "";
+
+  const mov = sort ? movements.slice().sort((a,b) => a - b) : movements ;
+
+  mov.forEach((mov, i) => {
+    const type = mov > 0 ? "deposit" : "withdrawal";
+    const html = `
+      <div class="movements__row">
+          <div class="movements__type movements__type--${type}">${
+      i + 1
+    } ${type}</div>
+      <div class="movements__value">${mov}€</div>
+     </div>
+    `;
+    containerMovements.insertAdjacentHTML("afterbegin", html);
+  });
+};
+
+displayMovement(account1.movements);
+
+
+// lets creat "userName" to login
+const creatUserName = function(accs){
+    accs.forEach(acc => {
+      acc.username = acc.owner
+      .toLowerCase()
+      .split(' ')
+      .map(acc => acc[0])
+      .join('')
+    })
+}
+creatUserName(accounts) ;
+
+let currentAccount ;
+
+btnLogin.addEventListener('click' , function(e){
+  e.preventDefault() ;
+  currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value)
+  console.log(currentAccount);
+
+  if(currentAccount?.pin === Number(inputLoginPin.value)){
+    
+  }
+
+  inputLoginPin.value = inputLoginUsername = '' ;
  
+})
+
+
+
+
+// Sort the data by clicking Sort  button 
+let sorted = true ;
+btnSort.addEventListener('click' , function(e){
+  e.preventDefault() ;
+  displayMovement(account1.movements , sorted) ;
+  sorted = !sorted ;
+})
