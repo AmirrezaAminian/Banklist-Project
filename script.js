@@ -185,8 +185,21 @@ btnTransfer.addEventListener("click", function (e) {
     currentAccount?.balance >= amount &&
     reciverAcc?.pin !== currentAccount?.pin
   ) {
-    currentAccount.movements.push(-amount) ;
-    reciverAcc.movements.push(amount) ;
-    updateUI(currentAccount) ;
+    currentAccount.movements.push(-amount);
+    reciverAcc.movements.push(amount);
+    updateUI(currentAccount);
   }
+});
+
+btnLoan.addEventListener("click", function (e) {
+  e.preventDefault();
+  const amount = +inputLoanAmount.value;
+  if (
+    amount > 0 &&
+    currentAccount.movements.some((mov) => mov >= amount * 0.1)
+  ) {
+    currentAccount.movements.push(amount);
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value = "";
 });
