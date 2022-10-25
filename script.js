@@ -103,6 +103,7 @@ const creatUserName = function (accs) {
 };
 creatUserName(accounts);
 
+// --------- calc Data
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
   labelBalance.textContent = `${acc.balance}€`;
@@ -110,7 +111,7 @@ const calcDisplayBalance = function (acc) {
 calcDisplayBalance(account1);
 
 const calcDisplaySummary = function (acc) {
-  const incomes =acc.movements
+  const incomes = acc.movements
     .filter((mov) => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
   labelSumIn.textContent = `${incomes}€`;
@@ -124,19 +125,20 @@ const calcDisplaySummary = function (acc) {
     .filter((mov) => mov > 0)
     .map((deposit) => (deposit * acc.interestRate) / 100)
     .filter((int, i, arr) => {
-       return int >= 1 ;
+      return int >= 1;
     })
-    .reduce((acc , int) => acc + int ,0)
+    .reduce((acc, int) => acc + int, 0);
 
-    labelSumInterest.textContent = `${interest}€`;
-
+  labelSumInterest.textContent = `${interest}€`;
 };
+// --------- calc Data
 
+// Update UI
 
 const updateUI = function (acc) {
   displayMovement(acc.movements);
   calcDisplayBalance(acc);
-  calcDisplaySummary(acc) ;
+  calcDisplaySummary(acc);
 };
 
 let currentAccount;
@@ -158,7 +160,7 @@ btnLogin.addEventListener("click", function (e) {
     updateUI(currentAccount);
   }
 
-  inputLoginPin.value = inputLoginUsername = "";
+  inputLoginPin.value = inputLoginUsername.value = "";
 });
 
 // Sort the data by clicking Sort  button
@@ -167,4 +169,24 @@ btnSort.addEventListener("click", function (e) {
   e.preventDefault();
   displayMovement(account1.movements, sorted);
   sorted = !sorted;
+});
+
+// transfer
+btnTransfer.addEventListener("click", function (e) {
+  e.preventDefault();
+  const amount = +inputTransferAmount.value;
+  const reciverAcc = accounts.find(
+    (acc) => acc.username === inputTransferTo.value
+  );
+  inputTransferAmount.value = inputTransferTo.value = "";
+
+  if (
+    amount > 0 &&
+    currentAccount?.balance >= amount &&
+    reciverAcc?.pin !== currentAccount?.pin
+  ) {
+    currentAccount.movements.push(-amount) ;
+    reciverAcc.movements.push(amount) ;
+    updateUI(currentAccount) ;
+  }
 });
